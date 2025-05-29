@@ -36,14 +36,17 @@
                             <a class="nav-link" href="{% url 'barter:profile' %}">Профиль</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+                            <a class="nav-link" href="{% url 'barter:logout' %}">Выйти</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Войти</a>
+                            <a class="nav-link" href="{% url 'barter:login' %}">Войти</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
+                            <a class="nav-link" href="{% url 'barter:signup' %}">Регистрация</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'barter:static_test' %}">static_test</a>
                         </li>
                     {% endif %}
                 </ul>

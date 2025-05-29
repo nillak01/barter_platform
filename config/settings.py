@@ -9,13 +9,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'barter/templates')],
         'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'barter/templates')],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -38,6 +36,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -120,11 +120,14 @@ USE_TZ = True
 ROOT_URLCONF = 'config.urls'
 WSGI_APPLICATION = 'config.wsgi.application'
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')    # Для сбора статики в production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOGOUT_REDIRECT_URL = '/'  # Перенаправлять на главную после выхода
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 ALLOWED_HOSTS = ['yourdomain.com', 'localhost']
 CSRF_COOKIE_SECURE = True

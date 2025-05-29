@@ -1,6 +1,8 @@
 # barter/forms.py
 from django import forms
-from .models import Item, Offer, UserProfile
+from .models import Item, Offer, UserProfile, User
+from django.contrib.auth.forms import UserCreationForm
+
 
 class ItemForm(forms.ModelForm):
     class Meta:
@@ -26,3 +28,10 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['phone', 'location', 'avatar']
+
+class CustomUserForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2")

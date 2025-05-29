@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link href="{% static 'barter/css/auth.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="nav-menu">
+        <div>
+            <ul>
+                <li><a href="/accounts/login/">Войти</a></li>
+                <li><a href="/accounts/signup/">Зарегистрируйтесь</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <h1>Вход в систему</h1>
+
+        <form method="post" action="/accounts/login/">
+            <input type="hidden" name="csrfmiddlewaretoken" value="XsUpb0irCWA3BKoLpsIysQEWhpcdLiEoexURozCSTBQNsBaH04tdVBqQsFad3UTz">
+
+            <div class="form-group">
+                <label for="id_username">Имя пользователя:</label>
+                <input type="text" name="username" placeholder="Имя пользователя" autocomplete="username" required id="id_username">
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Пароль:</label>
+                <input type="password" name="password" placeholder="Пароль" autocomplete="current-password" required id="id_password">
+            </div>
+
+            <button type="submit">Войти</button>
+
+            <p style="text-align: center; margin-top: 20px;">
+                <a href="/accounts/password_reset/">Забыли пароль?</a>
+                <span style="color: #ddd;"> | </span>
+                <a href="/accounts/signup/">Регистрация</a>
+            </p>
+        </form>
+    </div>
+</body>
+</html>
