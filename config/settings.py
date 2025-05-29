@@ -35,6 +35,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'barter',
     'rest_framework',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 MIDDLEWARE = [
@@ -46,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -117,7 +126,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')    # Для сбора ст�
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOGOUT_REDIRECT_URL = '/'  # Перенаправлять на главную после выхода
 
-DEBUG = False
 ALLOWED_HOSTS = ['yourdomain.com', 'localhost']
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True

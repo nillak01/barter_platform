@@ -4,10 +4,22 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Item, Offer, UserProfile
 from .forms import ItemForm, OfferForm, UserProfileForm
+from django.contrib.auth.forms import UserCreationForm
+
 
 def index(request):
     items = Item.objects.filter(is_active=True).order_by('-created_at')[:12]
     return render(request, 'barter/index.html', {'items': items})
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
 @login_required
 def item_detail(request, item_id):
