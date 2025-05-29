@@ -1,0 +1,40 @@
+{% extends "barter/base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center mb-4">
+        <h1 class="display-4">Добро пожаловать на BarterSwap!</h1>
+        <p class="lead">Меняй вещи без денег</p>
+        <a href="{% url 'barter:create_item' %}" class="btn btn-primary btn-lg">Добавить вещь</a>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for item in items %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            {% if item.image %}
+            <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="bg-secondary text-white text-center p-5" style="height: 200px;">
+                Нет изображения
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="card-text text-muted">{{ item.description|truncatechars:100 }}</p>
+                <span class="badge bg-info text-dark">{{ item.get_condition_display }}</span>
+            </div>
+            <div class="card-footer bg-white">
+                <a href="{% url 'barter:item_detail' item.id %}" class="btn btn-outline-primary">Подробнее</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <h4>Пока нет товаров для обмена</h4>
+        <p>Будьте первым, кто добавит вещь!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

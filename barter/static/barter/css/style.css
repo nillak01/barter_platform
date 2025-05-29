@@ -1,0 +1,33 @@
+/* Основные стили */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* Карточки товаров */
+.card {
+    transition: transform 0.2s;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Навигация */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Адаптивные изображения */
+.img-thumbnail {
+    max-height: 300px;
+    object-fit: cover;
+}
