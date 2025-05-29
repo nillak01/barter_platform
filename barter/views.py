@@ -30,7 +30,7 @@ def register(request):
             logger.error(f"Form errors: {form.errors}")
     else:
         form = UserCreationForm()
-    return render(request, 'registration/singup_min.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': form})
 
 
 def static_test(request):
