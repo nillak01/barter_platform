@@ -1,6 +1,6 @@
 # barter/forms.py
 from django import forms
-from .models import Item, Offer, UserProfile, User
+from .models import Item, Offer, UserProfile, User, ItemImage
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -11,6 +11,11 @@ class ItemForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
         }
+
+class ItemImageForm(forms.ModelForm):
+    class Meta:
+        model = ItemImage
+        fields = ['image']
 
 class OfferForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):

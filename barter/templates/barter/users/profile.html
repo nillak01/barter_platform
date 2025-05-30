@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Боковая панель профиля -->
+    <aside class="profile-sidebar">
+        <div class="profile-avatar">
+            {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" alt="Аватар" class="avatar-img">
+            {% else %}
+                <img src="{% static 'images/default-avatar.png' %}" alt="Аватар" class="avatar-img">
+            {% endif %}
+            <button class="avatar-upload-btn">Изменить фото</button>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-item">
+                <span class="stat-value">{{ user.profile.completed_exchanges }}</span>
+                <span class="stat-label">Обменов</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">{{ user.profile.rating }}</span>
+                <span class="stat-label">Рейтинг</span>
+            </div>
+        </div>
+
+        <nav class="profile-menu">
+            <a href="#" class="menu-item active">Мой профиль</a>
+            <a href="{% url 'my_offers' %}" class="menu-item">Мои предложения</a>
+            <a href="{% url 'exchange_history' %}" class="menu-item">История обменов</a>
+            <a href="{% url 'settings' %}" class="menu-item">Настройки</a>
+            <a href="{% url 'logout' %}" class="menu-item logout">Выйти</a>
+        </nav>
+    </aside>
+
+    <!-- Основное содержимое профиля -->
+    <main class="profile-main">
+        <div class="profile-header">
+            <h1>{{ user.get_full_name|default:user.username }}</h1>
+            <p class="location">
+                <i class="fas fa-map-marker-alt"></i>
+                {{ user.profile.city|default:"Город не указан" }}
+            </p>
+            <div class="profile-actions">
+                <button class="btn btn-edit">Редактировать профиль</button>
+                <button class="btn btn-primary">Создать предложение</button>
+            </div>
+        </div>
+
+        <div class="profile-sections">
+            <!-- О пользователе -->
+            <section class="profile-section">
+                <h2><i class="fas fa-user"></i> Обо мне</h2>
+                <div class="section-content">
+                    <p>{{ user.profile.about|default:"Пользователь пока ничего о себе не рассказал." }}</p>
+                </div>
+            </section>
+
+            <!-- Контакты -->
+            <section class="profile-section">
+                <h2><i class="fas fa-envelope"></i> Контакты</h2>
+                <div class="section-content">
+                    <div class="contact-item">
+                        <span class="contact-label">Email:</span>
+                        <span class="contact-value">{{ user.email }}</span>
+                    </div>
+                    {% if user.profile.phone %}
+                    <div class="contact-item">
+                        <span class="contact-label">Телефон:</span>
+                        <span class="contact-value">{{ user.profile.phone }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Активные предложения -->
+            <section class="profile-section">
+                <h2><i class="fas fa-exchange-alt"></i> Активные предложения ({{ active_offers.count }})</h2>
+                <div class="offers-grid">
+                    {% for offer in active_offers %}
+                    <div class="offer-card">
+                        <img src="{{ offer.images.first.image.url }}" alt="{{ offer.title }}" class="offer-img">
+                        <div class="offer-info">
+                            <h3>{{ offer.title }}</h3>
+                            <p class="offer-category">{{ offer.category.name }}</p>
+                            <div class="offer-meta">
+                                <span><i class="fas fa-eye"></i> {{ offer.views }}</span>
+                                <span><i class="fas fa-comments"></i> {{ offer.comments.count }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="empty-message">У вас пока нет активных предложений</p>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+{% endblock %}

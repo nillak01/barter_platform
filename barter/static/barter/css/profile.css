@@ -1,0 +1,266 @@
+/* Основные стили профиля */
+.profile-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 2rem auto;
+    gap: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-sidebar {
+    width: 280px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    align-self: flex-start;
+    position: sticky;
+    top: 20px;
+}
+
+.profile-main {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Аватар */
+.profile-avatar {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4CAF50;
+    margin-bottom: 1rem;
+}
+
+.avatar-upload-btn {
+    background: none;
+    border: none;
+    color: #4CAF50;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+/* Статистика */
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1.5rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+/* Меню */
+.profile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.menu-item {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    color: #555;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.menu-item:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.menu-item.active {
+    background: #e8f5e9;
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+.menu-item.logout {
+    color: #f44336;
+    margin-top: 1rem;
+}
+
+/* Шапка профиля */
+.profile-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.location {
+    color: #777;
+    margin: 0.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-edit {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.btn-edit:hover {
+    background: #eee;
+}
+
+.btn-primary {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #43a047;
+}
+
+/* Секции профиля */
+.profile-section {
+    margin-bottom: 2.5rem;
+}
+
+.profile-section h2 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-content {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+/* Контакты */
+.contact-item {
+    display: flex;
+    margin-bottom: 0.75rem;
+}
+
+.contact-label {
+    font-weight: 500;
+    width: 100px;
+    color: #555;
+}
+
+.contact-value {
+    color: #333;
+}
+
+/* Предложения */
+.offers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.offer-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.offer-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.offer-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.offer-info {
+    padding: 1rem;
+}
+
+.offer-info h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: #333;
+}
+
+.offer-category {
+    color: #777;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.offer-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.empty-message {
+    color: #777;
+    font-style: italic;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .profile-container {
+        flex-direction: column;
+    }
+
+    .profile-sidebar {
+        width: 100%;
+        position: static;
+    }
+
+    .offers-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}

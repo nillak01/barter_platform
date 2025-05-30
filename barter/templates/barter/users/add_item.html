@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="item-form-container">
+    <h1><i class="fas fa-plus-circle"></i> {{ title }}</h1>
+
+    <form method="post" enctype="multipart/form-data" class="item-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">Название товара</label>
+            {{ form.name }}
+            {{ form.name.errors }}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.category.id_for_label }}">Категория</label>
+                {{ form.category }}
+                {{ form.category.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.estimated_value.id_for_label }}">Оценочная стоимость</label>
+                {{ form.estimated_value }}
+                {{ form.estimated_value.errors }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.condition.id_for_label }}">Состояние</label>
+            {{ form.condition }}
+            {{ form.condition.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Описание</label>
+            {{ form.description }}
+            {{ form.description.errors }}
+        </div>
+
+        <div class="form-group">
+            <label>Изображения товара</label>
+            <div class="image-upload-container">
+                <input type="file" name="images" multiple accept="image/*" id="id_images">
+                <div class="image-preview" id="imagePreview"></div>
+            </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+            {{ form.is_active }}
+            <label for="{{ form.is_active.id_for_label }}">Активировать товар сразу</label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Сохранить товар</button>
+            <a href="{% url 'my_items' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'barter/css/item_form.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Предпросмотр изображений перед загрузкой
+    const imageInput = document.getElementById('id_images');
+    const previewContainer = document.getElementById('imagePreview');
+
+    imageInput.addEventListener('change', function() {
+        previewContainer.innerHTML = '';
+
+        if (this.files) {
+            Array.from(this.files).forEach(file => {
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        const preview = document.createElement('div');
+                        preview.className = 'preview-image';
+                        preview.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview">
+                            <button type="button" class="remove-image">&times;</button>
+                        `;
+                        previewContainer.appendChild(preview);
+
+                        // Удаление изображения из предпросмотра
+                        preview.querySelector('.remove-image').addEventListener('click', function() {
+                            preview.remove();
+                            // Здесь можно добавить логику для удаления файла из input
+                        });
+                    }
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

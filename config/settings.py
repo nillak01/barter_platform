@@ -136,4 +136,8 @@ SESSION_COOKIE_SECURE = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Дополнительные настройки (опционально)
+MAX_IMAGE_SIZE = 1024 * 1024 * 5  # 5MB
+ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp']
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мои предложения{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'barter/css/offers.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="my-offers-container">
+    <div class="offers-header">
+        <h1><i class="fas fa-box-open"></i> Мои предложения</h1>
+        <a href="{% url 'create_offer' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Создать новое предложение
+        </a>
+    </div>
+
+    <div class="offers-filter">
+        <div class="filter-tabs">
+            <a href="?status=active" class="tab {% if active_filter == 'active' %}active{% endif %}">
+                Активные ({{ active_offers.count }})
+            </a>
+            <a href="?status=pending" class="tab {% if active_filter == 'pending' %}active{% endif %}">
+                На рассмотрении ({{ pending_offers.count }})
+            </a>
+            <a href="?status=archived" class="tab {% if active_filter == 'archived' %}active{% endif %}">
+                Архивные ({{ archived_offers.count }})
+            </a>
+        </div>
+
+        <div class="search-sort">
+            <div class="search-box">
+                <input type="text" placeholder="Поиск по моим предложениям...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="sort-dropdown">
+                <select>
+                    <option>Сначала новые</option>
+                    <option>Сначала старые</option>
+                    <option>По популярности</option>
+                    <option>По алфавиту (А-Я)</option>
+                    <option>По алфавиту (Я-А)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    {% if offers %}
+    <div class="offers-grid">
+        {% for offer in offers %}
+        <div class="offer-card {% if not offer.is_active %}archived{% endif %}">
+            <div class="offer-image">
+                <img src="{{ offer.images.first.image.url|default:'/static/images/no-image.png' }}" alt="{{ offer.title }}">
+                <div class="offer-status">
+                    {% if offer.is_active %}
+                        <span class="status-badge active">Активно</span>
+                    {% else %}
+                        <span class="status-badge archived">В архиве</span>
+                    {% endif %}
+                </div>
+                <div class="offer-actions">
+                    <a href="{% url 'edit_offer' offer.id %}" class="action-btn edit" title="Редактировать">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form method="post" action="{% url 'toggle_offer_status' offer.id %}" class="action-form">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn archive" title="{% if offer.is_active %}В архив{% else %}Активировать{% endif %}">
+                            <i class="fas fa-{% if offer.is_active %}archive{% else %}redo{% endif %}"></i>
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'delete_offer' offer.id %}" class="action-form">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn delete" title="Удалить" onclick="return confirm('Удалить это предложение?')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="offer-info">
+                <h3><a href="{% url 'offer_detail' offer.id %}">{{ offer.title }}</a></h3>
+                <p class="offer-category">{{ offer.category.name }}</p>
+
+                <div class="offer-description">
+                    {{ offer.description|truncatechars:100 }}
+                </div>
+
+                <div class="offer-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-eye"></i> {{ offer.views }}
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-comments"></i> {{ offer.comments.count }}
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-exchange-alt"></i> {{ offer.offers_received.count }}
+                    </div>
+                    <div class="meta-item date">
+                        <i class="far fa-clock"></i> {{ offer.created_at|date:"d.m.Y" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if offers.has_previous %}
+            <a href="?page=1{% if active_filter %}&status={{ active_filter }}{% endif %}" class="page-link">&laquo; первая</a>
+            <a href="?page={{ offers.previous_page_number }}{% if active_filter %}&status={{ active_filter }}{% endif %}" class="page-link">предыдущая</a>
+        {% endif %}
+
+        <span class="current-page">
+            Страница {{ offers.number }} из {{ offers.paginator.num_pages }}
+        </span>
+
+        {% if offers.has_next %}
+            <a href="?page={{ offers.next_page_number }}{% if active_filter %}&status={{ active_filter }}{% endif %}" class="page-link">следующая</a>
+            <a href="?page={{ offers.paginator.num_pages }}{% if active_filter %}&status={{ active_filter }}{% endif %}" class="page-link">последняя &raquo;</a>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="empty-offers">
+        <img src="{% static 'images/no-offers.png' %}" alt="Нет предложений">
+        <h3>У вас пока нет предложений</h3>
+        <p>Создайте свое первое предложение и начните обмен!</p>
+        <a href="{% url 'create_offer' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Создать предложение
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// JavaScript для управления UI
+document.addEventListener('DOMContentLoaded', function() {
+    // Подтверждение удаления предложения
+    const deleteForms = document.querySelectorAll('.action-form.delete');
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!confirm('Вы уверены, что хотите удалить это предложение?')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Анимация карточек
+    const offerCards = document.querySelectorAll('.offer-card');
+    offerCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %}

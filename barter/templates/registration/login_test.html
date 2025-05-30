@@ -22,6 +22,7 @@
         <h1>Вход в систему</h1>
 
         <form method="post" action="/accounts/login/">
+            {% csrf_token %}
             <input type="hidden" name="csrfmiddlewaretoken" value="XsUpb0irCWA3BKoLpsIysQEWhpcdLiEoexURozCSTBQNsBaH04tdVBqQsFad3UTz">
 
             <div class="form-group">

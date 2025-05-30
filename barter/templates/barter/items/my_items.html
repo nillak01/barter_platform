@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мои товары{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'barter/css/items.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="my-items-container">
+    <div class="items-header">
+        <h1><i class="fas fa-boxes"></i> Мои товары</h1>
+        <div class="header-actions">
+            <a href="{% url 'add_item' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Добавить товар
+            </a>
+            <button class="btn btn-secondary bulk-actions-btn">
+                <i class="fas fa-tasks"></i> Групповые действия
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="bulk-actions-dropdown">
+                <button class="action-btn" id="activate-selected">
+                    <i class="fas fa-check-circle"></i> Активировать
+                </button>
+                <button class="action-btn" id="deactivate-selected">
+                    <i class="fas fa-ban"></i> Деактивировать
+                </button>
+                <button class="action-btn text-danger" id="delete-selected">
+                    <i class="fas fa-trash"></i> Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="items-controls">
+        <div class="view-toggle">
+            <button class="view-option active" data-view="grid">
+                <i class="fas fa-th-large"></i> Плитка
+            </button>
+            <button class="view-option" data-view="list">
+                <i class="fas fa-list"></i> Список
+            </button>
+        </div>
+
+        <div class="filter-sort">
+            <div class="filter-dropdown">
+                <select id="category-filter">
+                    <option value="">Все категории</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="sort-dropdown">
+                <select id="sort-by">
+                    <option value="-created_at">Сначала новые</option>
+                    <option value="created_at">Сначала старые</option>
+                    <option value="name">По названию (А-Я)</option>
+                    <option value="-name">По названию (Я-А)</option>
+                    <option value="-views">По популярности</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    {% if items %}
+    <div class="items-grid active-view">
+        {% for item in items %}
+        <div class="item-card" data-item-id="{{ item.id }}" data-status="{{ item.is_active|yesno:'active,inactive' }}">
+            <div class="item-checkbox">
+                <input type="checkbox" class="item-select" id="item-{{ item.id }}">
+                <label for="item-{{ item.id }}"></label>
+            </div>
+            <div class="item-image">
+                <img src="{{ item.get_primary_image.url|default:'/static/images/no-image.png' }}" alt="{{ item.name
