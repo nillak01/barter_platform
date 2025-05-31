@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'barter/base.html' %}
 {% load static %}
 
 {% block content %}
@@ -66,7 +66,7 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Сохранить товар
                 </button>
-                <a href="{% url 'my_items' %}" class="btn btn-secondary">
+                <a href="{% url 'barter:my_items' %}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Отмена
                 </a>
             </form>

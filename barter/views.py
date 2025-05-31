@@ -329,11 +329,11 @@ def my_offers(request):
     status_filter = request.GET.get('status', 'active')
 
     if status_filter == 'active':
-        offers = Offer.objects.filter(user=request.user, is_active=True)
+        offers = Offer.objects.filter(user=request.user, status='active')
     elif status_filter == 'pending':
-        offers = Offer.objects.filter(user=request.user, is_approved=False)
+        offers = Offer.objects.filter(user=request.user, status='pending')
     elif status_filter == 'archived':
-        offers = Offer.objects.filter(user=request.user, is_active=False, is_approved=True)
+        offers = Offer.objects.filter(user=request.user, status='archived')
     else:
         offers = Offer.objects.filter(user=request.user, is_active=True)
 
@@ -350,7 +350,7 @@ def my_offers(request):
         'archived_offers': Offer.objects.filter(user=request.user, is_active=False, is_approved=True).count(),
     }
 
-    return render(request, 'barter/users/my_offers.html', context)
+    return render(request, 'barter/offers/my_offers.html', context)
 
 @login_required
 def profile(request):
@@ -366,3 +366,48 @@ def profile(request):
         form = UserProfileForm(instance=profile)
 
     return render(request, 'barter/users/profile.html', {'form': form})
+
+
+@login_required
+def exchange_history(request):
+    status = request.GET.get('status', 'all')
+
+    exchanges = {
+        'all': request.user.exchanges.all().order_by('-created_at'),
+        'active': request.user.exchanges.filter(status='active'),
+        'completed': request.user.exchanges.filter(status='completed'),
+        'canceled': request.user.exchanges.filter(status='canceled'),
+    }
+
+    counts = {
+        'all_count': exchanges['all'].count(),
+        'active_count': exchanges['active'].count(),
+        'completed_count': exchanges['completed'].count(),
+        'canceled_count': exchanges['canceled'].count(),
+    }
+
+    return render(request, 'barter/users/exchange_history.html', {
+        'exchanges': exchanges,
+        **counts
+    })
+
+
+@login_required
+def profile_settings(request):
+    if request.method == 'POST':
+        form_type = request.POST.get('form_type')
+
+        if form_type == 'profile':
+            # Обработка формы профиля
+            pass
+        elif form_type == 'password':
+            # Обработка формы пароля
+            pass
+        elif form_type == 'notifications':
+            # Обработка формы уведомлений
+            pass
+        elif form_type == 'privacy':
+            # Обработка формы приватности
+            pass
+
+    return render(request, 'barter/users/settings.html')

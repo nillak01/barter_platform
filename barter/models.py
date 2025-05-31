@@ -124,6 +124,7 @@ class Offer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     def __str__(self):
         return f"Предложение от {self.from_user} для {self.to_user}"
 

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}История обменов{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'barter/css/exchange_history.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="exchange-history-container">
+    <div class="history-header">
+        <h1><i class="fas fa-exchange-alt"></i> История обменов</h1>
+
+        <div class="history-filter">
+            <div class="filter-tabs">
+                <a href="?status=all" class="tab {% if active_filter == 'all' %}active{% endif %}">Все</a>
+                <a href="?status=completed" class="tab {% if active_filter == 'completed' %}active{% endif %}">Завершённые</a>
+                <a href="?status=active" class="tab {% if active_filter == 'active' %}active{% endif %}">Активные</a>
+                <a href="?status=canceled" class="tab {% if active_filter == 'canceled' %}active{% endif %}">Отменённые</a>
+            </div>
+        </div>
+    </div>
+
+    {% if exchanges %}
+    <div class="exchanges-list">
+        {% for exchange in exchanges %}
+        <div class="exchange-card {% if exchange.status == 'completed' %}completed{% elif exchange.status == 'canceled' %}canceled{% endif %}">
+            <div class="exchange-info">
+                <div class="exchange-parties">
+                    <div class="party">
+                        <div class="party-avatar">
+                            {% if exchange.initiator.profile.avatar %}
+                                <img src="{{ exchange.initiator.profile.avatar.url }}" alt="{{ exchange.initiator.username }}">
+                            {% else %}
+                                <img src="{% static 'images/default-avatar.png' %}" alt="{{ exchange.initiator.username }}">
+                            {% endif %}
+                        </div>
+                        <div class="party-name">{{ exchange.initiator.username }}</div>
+                        <div class="party-items">
+                            {% for item in exchange.initiator_items.all %}
+                                <div class="item-preview">
+                                    <img src="{{ item.get_primary_image.image.url|default:'/static/images/no-image.png' }}" alt="{{ item.name }}">
+                                    <span>{{ item.name }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="exchange-arrow">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+
+                    <div class="party">
+                        <div class="party-avatar">
+                            {% if exchange.receiver.profile.avatar %}
+                                <img src="{{ exchange.receiver.profile.avatar.url }}" alt="{{ exchange.receiver.username }}">
+                            {% else %}
+                                <img src="{% static 'images/default-avatar.png' %}" alt="{{ exchange.receiver.username }}">
+                            {% endif %}
+                        </div>
+                        <div class="party-name">{{ exchange.receiver.username }}</div>
+                        <div class="party-items">
+                            {% for item in exchange.receiver_items.all %}
+                                <div class="item-preview">
+                                    <img src="{{ item.get_primary_image.image.url|default:'/static/images/no-image.png' }}" alt="{{ item.name }}">
+                                    <span>{{ item.name }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exchange-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-alt"></i> {{ exchange.created_at|date:"d.m.Y H:i" }}
+                    </div>
+                    <div class="meta-item status {{ exchange.status }}">
+                        {% if exchange.status == 'completed' %}
+                            <i class="fas fa-check-circle"></i> Завершён
+                        {% elif exchange.status == 'active' %}
+                            <i class="fas fa-sync-alt"></i> В процессе
+                        {% else %}
+                            <i class="fas fa-times-circle"></i> Отменён
+                        {% endif %}
+                    </div>
+                    {% if exchange.status == 'active' %}
+                    <div class="exchange-actions">
+                        <button class="btn btn-success btn-sm">
+                            <i class="fas fa-check"></i> Подтвердить
+                        </button>
+                        <button class="btn btn-danger btn-sm">
+                            <i class="fas fa-times"></i> Отменить
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if exchange.review %}
+            <div class="exchange-review">
+                <div class="review-header">
+                    <strong>Отзыв:</strong>
+                    <div class="rating">
+                        {% for i in "12345" %}
+                            <i class="fas fa-star{% if forloop.counter > exchange.review.rating %} empty{% endif %}"></i>
+                        {% endfor %}
+                    </div>
+                </div>
+                <p>{{ exchange.review.comment }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if exchanges.has_previous %}
+            <a href="?page=1{% if active_filter %}&status={{ active_filter }}{% endif %}" class="page-link">&laquo; первая</a>
+            <a href="?page={{ exchanges.previous_page_number }}{% if active_filter %}&status={{ active_filter }}{% endif %}" class="page-link">предыдущая</a>
+        {% endif %}
+
+        <span class="current-page">
+            Страница {{ exchanges.number }} из {{ exchanges.paginator.num_pages }}
+        </span>
+
+        {% if exchanges.has_next %}
+            <a href="?page={{ exchanges.next_page_number }}{% if active_filter %}&status={{ active_filter }}{% endif %}" class="page-link">следующая</a>
+            <a href="?page={{ exchanges.paginator.num_pages }}{% if active_filter %}&status={{ active_filter }}{% endif %}" class="page-link">последняя &raquo;</a>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="empty-history">
+        <img src="{% static 'images/no-exchanges.png' %}" alt="Нет обменов">
+        <h3>У вас пока нет истории обменов</h3>
+        <p>Начните обмен, чтобы увидеть его здесь!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

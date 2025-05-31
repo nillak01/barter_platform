@@ -23,6 +23,7 @@ services:
       DATABASE_URL: postgres://barter_user:barter_password@db:5432/barter_db
     command: >
       bash -c "
+      python manage.py makemigrations &&
       python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000
       "

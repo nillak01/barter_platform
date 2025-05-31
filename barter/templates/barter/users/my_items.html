@@ -1,0 +1,253 @@
+{% extends 'barter/base.html' %}
+{% load static %}
+
+{% block title %}Мои товары{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'barter/css/items.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="my-items-container">
+    <div class="items-header">
+        <h1><i class="fas fa-boxes"></i> Мои товары</h1>
+        <a href="{% url 'barter:create_item' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить товар
+        </a>
+    </div>
+
+    <div class="items-controls">
+        <div class="view-toggle">
+            <button class="view-option active" data-view="grid">
+                <i class="fas fa-th-large"></i> Плитка
+            </button>
+            <button class="view-option" data-view="list">
+                <i class="fas fa-list"></i> Список
+            </button>
+        </div>
+
+        <div class="filter-sort">
+            <div class="filter-dropdown">
+                <select id="category-filter">
+                    <option value="">Все категории</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="sort-dropdown">
+                <select id="sort-by">
+                    <option value="-created_at" {% if selected_sort == "-created_at" %}selected{% endif %}>Сначала новые</option>
+                    <option value="created_at" {% if selected_sort == "created_at" %}selected{% endif %}>Сначала старые</option>
+                    <option value="name" {% if selected_sort == "name" %}selected{% endif %}>По названию (А-Я)</option>
+                    <option value="-name" {% if selected_sort == "-name" %}selected{% endif %}>По названию (Я-А)</option>
+                    <option value="-views" {% if selected_sort == "-views" %}selected{% endif %}>По популярности</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    {% if items %}
+    <div class="items-grid active-view">
+        {% for item in items %}
+        <div class="item-card" data-item-id="{{ item.id }}" data-status="{{ item.is_active|yesno:'active,inactive' }}">
+            <div class="item-image">
+                <a href="{% url 'item_detail' item.id %}">
+                    <img src="{{ item.get_primary_image.image.url|default:'/static/images/no-image.png' }}" alt="{{ item.name }}">
+                </a>
+                <div class="item-status {{ item.is_active|yesno:'active,inactive' }}">
+                    {{ item.is_active|yesno:'Активен,Неактивен' }}
+                </div>
+                <div class="item-actions">
+                    <a href="{% url 'edit_item' item.id %}" class="action-btn" title="Редактировать">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form method="post" action="{% url 'toggle_item_status' item.id %}" class="action-form">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn" title="{% if item.is_active %}Деактивировать{% else %}Активировать{% endif %}">
+                            <i class="fas fa-{% if item.is_active %}ban{% else %}check{% endif %}"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="item-info">
+                <h3><a href="{% url 'item_detail' item.id %}">{{ item.name }}</a></h3>
+                <p class="item-category">{{ item.category.name }}</p>
+
+                <div class="item-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-eye"></i> {{ item.views }}
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-exchange-alt"></i> {{ item.offers_received.count }}
+                    </div>
+                    <div class="meta-item date">
+                        <i class="far fa-clock"></i> {{ item.created_at|date:"d.m.Y" }}
+                    </div>
+                </div>
+
+                <div class="item-description">
+                    {{ item.description|truncatechars:100 }}
+                </div>
+            </div>
+
+            <div class="item-footer">
+                <div class="item-value">
+                    <span class="value-label">Оценка:</span>
+                    <span class="value-amount">{{ item.estimated_value }} баллов</span>
+                </div>
+                <form method="post" action="{% url 'delete_item' item.id %}" class="delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить этот товар?')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="items-list">
+        {% for item in items %}
+        <div class="item-row" data-item-id="{{ item.id }}" data-status="{{ item.is_active|yesno:'active,inactive' }}">
+            <div class="item-image">
+                <a href="{% url 'item_detail' item.id %}">
+                    <img src="{{ item.get_primary_image.image.url|default:'/static/images/no-image.png' }}" alt="{{ item.name }}">
+                </a>
+            </div>
+            <div class="item-main-info">
+                <h3><a href="{% url 'item_detail' item.id %}">{{ item.name }}</a></h3>
+                <p class="item-category">{{ item.category.name }}</p>
+                <div class="item-description">
+                    {{ item.description|truncatechars:200 }}
+                </div>
+            </div>
+            <div class="item-stats">
+                <div class="stat">
+                    <i class="fas fa-eye"></i> {{ item.views }}
+                </div>
+                <div class="stat">
+                    <i class="fas fa-exchange-alt"></i> {{ item.offers_received.count }}
+                </div>
+                <div class="stat date">
+                    <i class="far fa-clock"></i> {{ item.created_at|date:"d.m.Y" }}
+                </div>
+            </div>
+            <div class="item-value">
+                {{ item.estimated_value }} баллов
+            </div>
+            <div class="item-status {{ item.is_active|yesno:'active,inactive' }}">
+                {{ item.is_active|yesno:'Активен,Неактивен' }}
+            </div>
+            <div class="item-actions">
+                <a href="{% url 'edit_item' item.id %}" class="action-btn" title="Редактировать">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form method="post" action="{% url 'toggle_item_status' item.id %}" class="action-form">
+                    {% csrf_token %}
+                    <button type="submit" class="action-btn" title="{% if item.is_active %}Деактивировать{% else %}Активировать{% endif %}">
+                        <i class="fas fa-{% if item.is_active %}ban{% else %}check{% endif %}"></i>
+                    </button>
+                </form>
+                <form method="post" action="{% url 'delete_item' item.id %}" class="action-form">
+                    {% csrf_token %}
+                    <button type="submit" class="action-btn text-danger" title="Удалить" onclick="return confirm('Удалить этот товар?')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if items.has_previous %}
+            <a href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}" class="page-link">&laquo; первая</a>
+            <a href="?page={{ items.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}" class="page-link">предыдущая</a>
+        {% endif %}
+
+        <span class="current-page">
+            Страница {{ items.number }} из {{ items.paginator.num_pages }}
+        </span>
+
+        {% if items.has_next %}
+            <a href="?page={{ items.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}" class="page-link">следующая</a>
+            <a href="?page={{ items.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}" class="page-link">последняя &raquo;</a>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="empty-items">
+        <img src="{% static 'images/no-items.png' %}" alt="Нет товаров">
+        <h3>У вас пока нет товаров</h3>
+        <p>Добавьте свой первый товар, чтобы начать обмен!</p>
+        <a href="{% url 'barter:create_item' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить товар
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Переключение между видами (плитка/список)
+    const viewOptions = document.querySelectorAll('.view-option');
+    const itemsGrid = document.querySelector('.items-grid');
+    const itemsList = document.querySelector('.items-list');
+
+    viewOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            viewOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+
+            if (this.dataset.view === 'grid') {
+                itemsGrid.classList.add('active-view');
+                itemsList.classList.remove('active-view');
+            } else {
+                itemsGrid.classList.remove('active-view');
+                itemsList.classList.add('active-view');
+            }
+        });
+    });
+
+    // Фильтрация по категории
+    document.getElementById('category-filter').addEventListener('change', function() {
+        applyFilters();
+    });
+
+    // Сортировка
+    document.getElementById('sort-by').addEventListener('change', function() {
+        applyFilters();
+    });
+
+    function applyFilters() {
+        const category = document.getElementById('category-filter').value;
+        const sortBy = document.getElementById('sort-by').value;
+
+        let url = new URL(window.location.href);
+        url.searchParams.set('category', category);
+        url.searchParams.set('sort', sortBy);
+        url.searchParams.set('page', 1);
+
+        window.location.href = url.toString();
+    }
+
+    // Анимация карточек при наведении
+    const itemCards = document.querySelectorAll('.item-card');
+    itemCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+        });
+    });
+});
+</script>
+{% endblock %}
