@@ -25,14 +25,14 @@ services:
       bash -c "
       python manage.py makemigrations &&
       python manage.py migrate &&
-      python manage.py runserver 213.171.10.209:1000
+      gunicorn project.wsgi:application -b 213.171.10.209:8000
       "
 
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "1000:1000"
+      - "8000:8000"
 
 volumes:
   postgres_data:
