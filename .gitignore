@@ -2,3 +2,5 @@
 .venv/
 .git/
 .mypy_cache/
+.gitignore
+.env.prod

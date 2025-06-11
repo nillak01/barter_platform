@@ -1,13 +1,22 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'ваш-секретный-ключ'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# Безопасность (обязательно для HTTP!)
+SECURE_SSL_REDIRECT = False  # Отключает перенаправление на HTTPS
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 TEMPLATES = [
     {
@@ -80,11 +89,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'barter_db',
-        'USER': 'barter_user',
-        'PASSWORD': 'barter_password',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': 'db',
-        'PORT': '5432',
+        'PORT': os.getenv('POSTGRES_PORT', 5432),
     }
 }
 
@@ -129,7 +138,7 @@ LOGOUT_REDIRECT_URL = '/'  # Перенаправлять на главную п
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-ALLOWED_HOSTS = ['yourdomain.com', 'localhost']
+ALLOWED_HOSTS = (os.getenv('ALLOWED_HOSTS')).split(',')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 

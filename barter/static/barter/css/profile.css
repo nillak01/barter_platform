@@ -33,12 +33,12 @@
 }
 
 .avatar-img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #4CAF50;
-    margin-bottom: 1rem;
+    width: 150px;        /* Фиксированная ширина */
+    height: 150px;       /* Фиксированная высота */
+    border-radius: 50%;  /* Круглая форма (опционально) */
+    object-fit: cover;   /* Обрезка изображения по размеру */
+    border: 3px solid #fff; /* Рамка (опционально) */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Тень (опционально) */
 }
 
 .avatar-upload-btn {
