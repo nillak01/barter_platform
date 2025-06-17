@@ -137,3 +137,13 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Профиль {self.user.username}"
+
+class TestTable(models.Model):
+    fio = models.CharField()
+    age = models.IntegerField()
+    balance = models.IntegerField()
+    phone = models.CharField(max_length=20, blank=True)
+    sex = models.CharField()
+
+    def __str__(self):
+        return self.fio
