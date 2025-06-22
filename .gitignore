@@ -3,4 +3,7 @@
 .git/
 .mypy_cache/
 .gitignore
-.env.prod
+.env
+docker-compose.yml
+Dockerfile
+.gitignore
