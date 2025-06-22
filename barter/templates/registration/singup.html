@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link href="{% static 'barter/css/auth.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="nav-menu">
+        <div>
+            <ul>
+                <li><a href="/accounts/login/">Войти</a></li>
+                <li><a href="/accounts/signup/">Зарегистрируйтесь</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <h1>Зарегистрируйтесь</h1>
+
+        <p style="text-align: center;">Уже зарегистрированы? <a href="/accounts/login/">Войдите</a>.</p>
+
+        <form method="post" action="barter:accounts/signup/">
+            {% csrf_token %}
+            <input type="hidden" name="csrfmiddlewaretoken" value="XsUpb0irCWA3BKoLpsIysQEWhpcdLiEoexURozCSTBQNsBaH04tdVBqQsFad3UTz">
+
+            <div class="form-group">
+                <label for="id_email">E-mail (опционально):</label>
+                <input type="email" name="email" placeholder="Адрес электронной почты" autocomplete="email" maxlength="320" id="id_email">
+            </div>
+
+            <div class="form-group">
+                <label for="id_username">Имя пользователя:</label>
+                <input type="text" name="username" placeholder="Имя пользователя" autocomplete="username" minlength="1" maxlength="150" required id="id_username">
+            </div>
+
+            <div class="form-group">
+                <label for="id_password1">Пароль:</label>
+                <input type="password" name="password1" placeholder="Пароль" autocomplete="new-password" required id="id_password1">
+                <span class="helptext">
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Пароль не должен быть слишком похож на другую вашу личную информацию.</li>
+                        <li>Ваш пароль должен содержать как минимум 8 символов.</li>
+                        <li>Пароль не должен быть слишком простым.</li>
+                        <li>Пароль не может состоять только из цифр.</li>
+                    </ul>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="id_password2">Пароль (ещё раз):</label>
+                <input type="password" name="password2" placeholder="Пароль (ещё раз)" autocomplete="new-password" required id="id_password2">
+            </div>
+
+            <button type="submit">Зарегистрируйтесь</button>
+        </form>
+    </div>
+</body>
+</html>

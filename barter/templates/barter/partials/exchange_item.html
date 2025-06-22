@@ -1,0 +1,91 @@
+<div class="card mb-3 exchange-item exchange-{{ exchange.status }}">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <span class="badge status-{{ exchange.status }}">
+                    {% if exchange.status == 'completed' %}
+                        <i class="fas fa-check-circle mr-1"></i> Завершен
+                    {% elif exchange.status == 'active' %}
+                        <i class="fas fa-sync-alt mr-1"></i> В процессе
+                    {% else %}
+                        <i class="fas fa-times-circle mr-1"></i> Отменен
+                    {% endif %}
+                </span>
+                <small class="text-muted ml-2">
+                    <i class="far fa-clock mr-1"></i>{{ exchange.created_at|date:"d.m.Y H:i" }}
+                </small>
+            </div>
+
+            {% if exchange.status == 'active' %}
+            <div>
+                <button class="btn btn-sm btn-success confirm-action"
+                        data-confirm-message="Подтвердить завершение обмена?">
+                    <i class="fas fa-check"></i> Подтвердить
+                </button>
+                <button class="btn btn-sm btn-danger confirm-action"
+                        data-confirm-message="Вы уверены, что хотите отменить обмен?">
+                    <i class="fas fa-times"></i> Отменить
+                </button>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="exchange-parties">
+            <div class="party">
+                <div class="party-info mb-2">
+                    <img src="{% if exchange.initiator.profile.avatar %}{{ exchange.initiator.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
+                         alt="{{ exchange.initiator.username }}"
+                         class="rounded-circle" width="40">
+                    <strong class="ml-2">{{ exchange.initiator.username }}</strong>
+                </div>
+                <div class="party-items">
+                    {% for item in exchange.initiator_items.all %}
+                    <div class="item-preview">
+                        <img src="{{ item.get_primary_image.image.url|default:'/static/images/no-image.png' }}"
+                             alt="{{ item.name }}"
+                             class="img-thumbnail" width="60">
+                        <small class="d-block text-center mt-1">{{ item.name }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="exchange-arrow mx-3">
+                <i class="fas fa-exchange-alt fa-2x text-muted"></i>
+            </div>
+
+            <div class="party">
+                <div class="party-info mb-2">
+                    <img src="{% if exchange.receiver.profile.avatar %}{{ exchange.receiver.profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
+                         alt="{{ exchange.receiver.username }}"
+                         class="rounded-circle" width="40">
+                    <strong class="ml-2">{{ exchange.receiver.username }}</strong>
+                </div>
+                <div class="party-items">
+                    {% for item in exchange.receiver_items.all %}
+                    <div class="item-preview">
+                        <img src="{{ item.get_primary_image.image.url|default:'/static/images/no-image.png' }}"
+                             alt="{{ item.name }}"
+                             class="img-thumbnail" width="60">
+                        <small class="d-block text-center mt-1">{{ item.name }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% if exchange.review %}
+        <div class="exchange-review mt-3 p-3 bg-light rounded">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Отзыв:</strong>
+                <div class="rating">
+                    {% for i in "12345" %}
+                        <i class="fas fa-star{% if forloop.counter > exchange.review.rating %} text-muted{% endif %}"></i>
+                    {% endfor %}
+                </div>
+            </div>
+            <p class="mb-0">{{ exchange.review.comment }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>

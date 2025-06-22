@@ -3,30 +3,29 @@ version: '3.8'
 services:
   db:
     image: postgres:17
+    env_file:
+      - .env  # Подключаем файл с переменными
     environment:
-      POSTGRES_DB: barter_db
-      POSTGRES_USER: barter_user
-      POSTGRES_PASSWORD: barter_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U barter_user -d barter_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      interval: 1s
+      timeout: 1s
+      retries: 1
 
   web:
     build: .
     environment:
-      DATABASE_URL: postgres://barter_user:barter_password@db:5432/barter_db
-    command: >
-      bash -c "
-      python manage.py migrate &&
-      python manage.py runserver 0.0.0.0:8000
-      "
-
+      DATABASE_URL: ${DATABASE_URL}
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy

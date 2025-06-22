@@ -1,0 +1,146 @@
+{% extends 'barter/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2><i class="fas fa-plus-circle"></i> {{ title }}</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ item_form.name.label_tag }}
+                            {{ item_form.name }}
+                            {{ item_form.name.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ item_form.category.label_tag }}
+                            {{ item_form.category }}
+                            {{ item_form.category.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ item_form.estimated_value.label_tag }}
+                            {{ item_form.estimated_value }}
+                            {{ item_form.estimated_value.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ item_form.condition.label_tag }}
+                            {{ item_form.condition }}
+                            {{ item_form.condition.errors }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ item_form.description.label_tag }}
+                            {{ item_form.description }}
+                            {{ item_form.description.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ image_form.images.label_tag }}
+                            <div class="custom-file">
+                                <input type="file" name="images" class="custom-file-input" id="id_images" multiple>
+                                <label class="custom-file-label" for="id_images">Выберите изображения...</label>
+                            </div>
+                            <small class="form-text text-muted">Можно загрузить несколько изображений</small>
+                        </div>
+
+                        <div class="image-preview mt-3" id="imagePreview"></div>
+                    </div>
+                </div>
+
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="id_is_active" name="is_active" checked>
+                    <label class="form-check-label" for="id_is_active">Сразу активировать товар</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Сохранить товар
+                </button>
+                <a href="{% url 'barter:my_items' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Отмена
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Превью изображений перед загрузкой
+    const imageInput = document.getElementById('id_images');
+    const previewContainer = document.getElementById('imagePreview');
+
+    imageInput.addEventListener('change', function() {
+        previewContainer.innerHTML = '';
+
+        if (this.files && this.files.length > 0) {
+            Array.from(this.files).forEach(file => {
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        const preview = document.createElement('div');
+                        preview.className = 'preview-thumbnail';
+                        preview.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview">
+                            <span class="preview-filename">${file.name}</span>
+                        `;
+                        previewContainer.appendChild(preview);
+                    }
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+
+    // Обновление label для выбора файлов
+    $('.custom-file-input').on('change', function() {
+        let fileName = $(this).val().split('\\').pop();
+        if ($(this)[0].files.length > 1) {
+            fileName = $(this)[0].files.length + ' файлов выбрано';
+        }
+        $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.preview-thumbnail {
+    display: inline-block;
+    margin: 0.5rem;
+    width: 100px;
+    position: relative;
+}
+
+.preview-thumbnail img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.preview-filename {
+    display: block;
+    font-size: 0.7rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+</style>
+{% endblock %}

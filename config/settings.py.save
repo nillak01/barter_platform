@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 
 # Безопасность (обязательно для HTTP!)
@@ -130,20 +130,24 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = "/var/www/studdev.ru/static/"    # Для сбора статики в production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')    # Для сбора статики в production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOGOUT_REDIRECT_URL = '/'  # Перенаправлять на главную после выхода
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-ALLOWED_HOSTS = ['studdev.ru', '213.171.10.209', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = $ git push
+Connection reset by 140.82.121.4 port 22
+fatal: Could not read from remote repository.
 
+Please make sure you have the correct access rights
+and the repository exists.(os.getenv('ALLOWED_HOSTS')).split(',')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = "/var/www/studdev.ru/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Дополнительные настройки (опционально)
 MAX_IMAGE_SIZE = 1024 * 1024 * 5  # 5MB
